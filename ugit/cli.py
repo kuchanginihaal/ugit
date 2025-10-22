@@ -1,4 +1,6 @@
 import argparse
+import os
+import ugit.data as data
 
 def main():
     args = parse_args()
@@ -18,5 +20,6 @@ def parse_args():
 
 #Command handler for 'init' command
 def init(args):
-    print("Hello World!")
+    data.init()
+    print(f"Initialized empty ugit repository in {os.path.abspath(data.GIT_DIR)}")
     
