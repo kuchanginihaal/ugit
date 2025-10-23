@@ -26,3 +26,8 @@ def get_object(oid, expected='blob'):
     
     return content
 
+def set_HEAD(oid):
+    head_path = os.path.join(GIT_DIR,'HEAD')
+    with open(head_path,'w') as f:
+        f.write(oid)  
+
