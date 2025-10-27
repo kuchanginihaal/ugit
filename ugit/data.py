@@ -30,4 +30,11 @@ def set_HEAD(oid):
     head_path = os.path.join(GIT_DIR,'HEAD')
     with open(head_path,'w') as f:
         f.write(oid)  
+        
+def get_HEAD():
+    head_path = os.path.join(GIT_DIR,'HEAD')
+    if not os.path.exists(head_path):
+        return None
+    with open(head_path,'r') as f:
+        return f.read().strip()
 

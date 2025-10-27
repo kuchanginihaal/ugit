@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from collections import namedtuple
+
 import ugit.data as data
 
 def write_tree(directory='.'):
@@ -82,9 +84,30 @@ def _empty_current_directory():
                 pass
 
 
-          
+Commit = namedtuple('Commit',['tree','parent','message']) 
+    
+def get_commit(oid):
+    parent = None
+    commit = data.get_object(oid,expected='commit').decode()
+    lines = iter(commit.splitlines())
+    for line in lines:
+        if line.strip() == '':
+            break
+        
+        key,value = line.split(' ',1)
+        if key == 'tree':
+            tree = value
+        elif key == 'parent':
+            parent = value
+    
+    message = '\n'.join(lines).strip()
+    return Commit(tree=tree,parent=parent,message=message)
+
 def commit(message):
     commit = f"tree {write_tree()}\n"
+    HEAD = data.get_HEAD()
+    if HEAD:
+        commit += f"parent {HEAD}\n"
     commit += f"\n{message}\n"
     oid = data.hash_object(commit.encode(),type_='commit')
     data.set_HEAD(oid)
