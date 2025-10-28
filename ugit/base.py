@@ -105,10 +105,23 @@ def get_commit(oid):
 
 def commit(message):
     commit = f"tree {write_tree()}\n"
-    HEAD = data.get_HEAD()
+    HEAD = data.get_ref('HEAD')
     if HEAD:
         commit += f"parent {HEAD}\n"
     commit += f"\n{message}\n"
     oid = data.hash_object(commit.encode(),type_='commit')
-    data.set_HEAD(oid)
+    data.update_ref('HEAD',oid)
     return oid
+
+def checkout(oid):
+    commit = get_commit(oid)
+    read_tree(commit.tree)
+    data.update_ref('HEAD',oid)
+    
+def create_tag(name,oid):
+    data.update_ref(os.path.join('refs','tags',name),oid)
+    
+def get_oid(name):
+    ref_path = os.path.join('refs','tags',name)
+    return data.get_ref(ref_path) or name
+    

@@ -26,15 +26,17 @@ def get_object(oid, expected='blob'):
     
     return content
 
-def set_HEAD(oid):
-    head_path = os.path.join(GIT_DIR,'HEAD')
-    with open(head_path,'w') as f:
+def update_ref(ref,oid):
+    ref_path = os.path.join(GIT_DIR,ref)
+    os.makedirs(os.path.dirname(ref_path),exist_ok=True)
+    with open(ref_path,'w') as f:
         f.write(oid)  
         
-def get_HEAD():
-    head_path = os.path.join(GIT_DIR,'HEAD')
-    if not os.path.exists(head_path):
+def get_ref(ref):
+    ref_path = os.path.join(GIT_DIR,ref)
+    if not os.path.exists(ref_path):
         return None
-    with open(head_path,'r') as f:
-        return f.read().strip()
+    if os.path.isfile(ref_path):
+        with open(ref_path,'r') as f:
+            return f.read().strip()
 
